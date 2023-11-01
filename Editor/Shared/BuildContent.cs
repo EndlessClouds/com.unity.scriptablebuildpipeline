@@ -155,6 +155,16 @@ namespace UnityEditor.Build.Pipeline
                     string address = bundleBuild.addressableNames != null && i < bundleBuild.addressableNames.Length && !string.IsNullOrEmpty(bundleBuild.addressableNames[i]) ?
                         bundleBuild.addressableNames[i] : AssetDatabase.GUIDToAssetPath(asset.ToString());
                     
+                    if (Addresses.TryGetValue(asset, out var existingAddress))
+                    {
+                        if (existingAddress == address)
+                        {
+                            continue;
+                        }
+
+                        throw new("Tried to register different address, under same asset path");
+                    }
+                    
                     // Add the guid to the bundle map
                     guids.Add(asset);
                     // Add the guid & address
